@@ -2,7 +2,6 @@
   <div id="app">
     <img src="./assets/logo.png">
     <router-view id="content"></router-view>
-    <p>wtf?</p>
   </div>
 </template>
 

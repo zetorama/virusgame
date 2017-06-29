@@ -1,39 +1,45 @@
 <template>
-  <div class="matrix-cmp">
-    <div class="actions">
-      <button @click.prevent="onNext">Next round</button>
-    </div>
-    <div class="matrix">
+  <section class="matrix-cmp">
+    <header class="header">
+      <div class="actions">
+        <button @click.prevent="onNext">Next round</button>
+      </div>
+      <dl class="info">
+        <dt>Columns:</dt>
+        <dd>{{ colsN }}</dd>
+        <dt>Max Rows:</dt>
+        <dd>{{ rowsN }}</dd>
+      </dl>
+    </header>
+    <article class="matrix">
       <div v-for="(m, row) in matrix" class="row" :key="row">
-        <Cell v-for="col in colsN" class="cell" :key="col">
-          <span v-if="matrix[row] && isCell(matrix[row][col-1])"
-            class="digit"
-          >
+        <div v-for="col in colsN"
+          :key="col"
+          :class="['cell', clsCell(row, col-1)]"
+           @click="onChoose(row, col-1)"
+        >
+          <span v-if="isCellCoords(row, col-1)" class="symbol digit">
             {{ matrix[row][col-1] }}
           </span>
-          <span class="cleared" v-else-if="isCleared(row, col-1)">
+          <span v-else-if="isCleared(row, col-1)" class="symbol cleared">
             &bull;
           </span>
-          <span class="clean" v-else></span>
-        </Cell>
+        </div>
       </div>
-    </div>
-  </div>
+    </article>
+  </section>
 </template>
 
 <script>
-import Cell from '@/components/Cell'
-
 export default {
   name: 'matrix',
   components: {
-    Cell,
   },
   data () {
     return {
       colsN: 10,
       rowsN: 16,
-      activePosition: [],
+      activeCoords: [],
       matrix: [
         [0,1,2,3,4,5,6,7,8,9],
         [0,0,0,1,0,2,0,3,0,4],
@@ -49,12 +55,59 @@ export default {
     }
   },
   methods: {
+    onChoose(row, col) {
+      if (!this.isCellCoords(row, col)) {
+        return
+      }
+      if (!this.activeCoords.length) {
+        this.activeCoords = [row, col]
+        return
+      }
+
+      if (!this.isActiveCoords(row, col)) {
+        this.match(this.activeCoords, [row, col])
+      }
+      this.activeCoords = []
+    },
+
     onNext() {
-      this.matrix = this.reproduce()
+      this.activeCoords = []
+      this.reproduce()
     },
 
     onGameOver(msg) {
       alert(msg)
+    },
+
+    clsCell(row, col) {
+      const isDigit = this.isCellCoords(row, col)
+      const isClean = !isDigit && this.isCleared(row, col)
+      const isEmpty = !isDigit && !isClean
+      const isActive = !isEmpty && this.isActiveCoords(row, col)
+      return {
+        'is-digit': isDigit,
+        'is-clean': isClean,
+        'is-empty': isEmpty,
+        'is-active': isActive,
+      }
+    },
+
+    match([row1, col1], [row2, col2]) {
+      this.destroy([row1, col1], [row2, col2])
+    },
+
+    destroy(...coords) {
+      this.matrix = this.matrix.map((row, idx) => {
+        const seq = row.slice()
+
+        for (const [row, col] of coords) {
+          if (row === idx && this.isCell(seq[col])) {
+            seq[col] = null
+          }
+        }
+
+        return seq
+      })
     },
 
     reproduce() {
@@ -80,13 +133,21 @@ export default {
         copy[currentRow] = [cell]
         currentCol = 1
       }
-      console.log(copy, strain)
 
-      return copy
+      this.matrix = copy
+      return this
     },
 
     isCell(cell) {
-      return cell || cell === 0
+      return !!cell || cell === 0
+    },
+
+    isCellCoords(row, col) {
+      return this.matrix[row] && this.isCell(this.matrix[row][col]) || false
+    },
+
+    isActiveCoords(row, col) {
+      return row === this.activeCoords[0] && col === this.activeCoords[1]
     },
 
     isCleared(row, col) {
@@ -101,42 +162,93 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+@import "../utils/vars.css";
+@import "../utils/keyframes.css";
+
+
+.matrix-cmp {
+  --border-width: 1px;
+  --border-color: #999;
+  --border-style: solid;
+  --border: var(--border-width) var(--border-style) var(--border-color);
+  --color: #0f0;
+  --bg-color: #333;
+  --hover-color: var(--color);
+  --hover-bg-color: #666;
+  --active-color: var(--color);
+  --active-bg-color: var(--bg-color);
+
+  --blink-color: #6f6;
+  --blink-speed: 1s;
+}
 
 .actions {
   padding: 20px;
 }
+.info dt, .info dd {
+  display: inline;
+  margin: 0;
+  list-style: none;
+  font-size: 1.3rem;
+}
+.info dd + dt::before {
+  content: "| ";
+  padding: 0 5px;
+}
 
 .matrix {
-  display: inline-block;
-  border: 1px solid #999;
+  display: inline-table;
 }
 .row {
-  display: flex;
-  flex-direction: row;
-  border-top: 1px solid #bbb;
-}
-.row:first-child {
-  border: none;
+  display: table-row;
 }
 .cell {
-  border-left: 1px solid #bbb;
-}
-.cell:first-child {
-  border: none;
-}
-.digit, .cleared, .clean {
+  display: table-cell;
+  position: relative;
   width: 50px;
   height: 50px;
-}
-.clean {
-  display: block;
-}
-.digit, .cleared {
-  display: flex;
-  background: #333;
-  color: #0f0;
-  align-items: center;
-  justify-content: center;
+  vertical-align: middle;
+  border-bottom: var(--border);
+  border-right: var(--border);
+
   font-size: 2rem;
+  font-weight: bold;
+  cursor: default;
 }
+.row:first-child .cell {
+  border-top: var(--border);
+}
+.cell:first-child {
+  border-left: var(--border);
+}
+.cell.is-empty {
+  border: none;
+}
+
+.cell.is-digit, .cell.is-clean {
+  color: var(--color);
+  background-color: var(--bg-color);
+}
+.cell.is-digit:hover {
+  color: var(--hover-color);
+  background-color: var(--hover-bg-color);
+}
+
+.cell.is-active {
+  color: var(--active-color);
+  background-color: var(--active-bg-color);
+}
+.cell.is-active::after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 1.1rem;
+  left: calc(50% - .7rem);
+  width: 1.4rem;
+  height: 1.3em;
+  background-color: var(--blink-color);
+
+  animation: blink var(--blink-speed) step-end infinite;
+}
+
 </style>
