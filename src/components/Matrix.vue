@@ -35,19 +35,31 @@ export default {
   name: 'matrix',
   components: {
   },
+  props: {
+    colsN: {
+      type: Number,
+      default: 10,
+    },
+    rowsN: {
+      type: Number,
+      default: 16,
+    },
+    sequence: {
+      type: Array,
+      default: () => [
+        0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+        0, 0, 0, 1, 0, 2, 0, 3, 0, 4,
+      ],
+    },
+  },
   data () {
     return {
-      colsN: 10,
-      rowsN: 16,
       activeCoords: [],
-      matrix: [
-        [0,1,2,3,4,5,6,7,8,9],
-        [0,0,0,1,0,2,0,3,0,4],
-      ],
+      matrix: this.fill([], this.sequence)
     }
   },
   computed: {
-    strain() {
+    curSequence() {
       return this.matrix.reduce(
         (all, row) => all.concat(row.filter(col => this.isCell(col))),
         [],
@@ -94,6 +106,7 @@ export default {
 
     match([row1, col1], [row2, col2]) {
       this.destroy([row1, col1], [row2, col2])
+      return this
     },
 
     destroy(...coords) {
@@ -108,17 +121,34 @@ export default {
 
         return seq
       })
+
+      return this
     },
 
     reproduce() {
-      const {matrix, strain, colsN, rowsN} = this
-      const copy = matrix.map(row => row.slice())
-      let currentRow = copy.length - 1
-      let currentCol = copy[currentRow].length
-      for (const cell of strain) {
+      this.matrix = this.fill(this.clone())
+      if (!this.hasSpace()) {
+        this.onGameOver('FINITA!')
+      }
+      return this
+    },
+
+    clone(matrix = this.matrix) {
+      return Array.isArray(matrix) ? matrix.map(row => row.slice()) : []
+    },
+
+    fill(matrix, sequence = this.curSequence, colsN = this.colsN, rowsN = this.rowsN) {
+      if (!matrix.length) {
+        // we need at least one row to start
+        matrix.push([])
+      }
+
+      let currentRow = matrix.length - 1
+      let currentCol = matrix[currentRow].length
+      for (const cell of sequence) {
         if (currentCol < colsN) {
           // just add to current
-          copy[currentRow].push(cell)
+          matrix[currentRow].push(cell)
           currentCol++
           continue
         }
@@ -126,16 +156,20 @@ export default {
         // switch to next row
         currentRow++
         if (rowsN && currentRow === rowsN) {
-          this.onGameOver('FINITA!')
+          // no more space allowed
           break
         }
 
-        copy[currentRow] = [cell]
+        matrix[currentRow] = [cell]
         currentCol = 1
       }
 
-      this.matrix = copy
-      return this
+      return matrix
+    },
+
+    hasSpace() {
+      const rowsN = this.matrix.length
+      return rowsN < this.rowsN || (rowsN === this.rowsN && this.matrix[rowsN - 1].length < this.colsN)
     },
 
     isCell(cell) {
@@ -152,9 +186,7 @@ export default {
 
     isCleared(row, col) {
       const rowsN = this.matrix.length
-      return row + 1 < rowsN || (
-        row + 1 === rowsN && col < this.matrix[row].length
-      )
+      return row + 1 < rowsN || row + 1 === rowsN && col < this.matrix[row].length
     },
   },
 }
