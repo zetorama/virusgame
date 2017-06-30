@@ -20,7 +20,7 @@
         <div v-for="col in colsN"
           :key="col"
           :class="['cell', clsCell([row, col-1])]"
-           @click="onChoose([row, col-1])"
+          @click="onChoose([row, col-1])"
         >
           <span v-if="isCell([row, col-1])" class="symbol digit">
             {{ getCell([row, col-1]) }}
