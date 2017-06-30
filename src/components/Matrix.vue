@@ -2,13 +2,16 @@
   <section class="matrix-cmp">
     <header class="header">
       <div class="actions">
+        <button @click.prevent="onRestart">Restart</button>
         <button @click.prevent="onNext">Next round</button>
       </div>
       <dl class="info">
-        <dt>Columns:</dt>
-        <dd>{{ colsN }}</dd>
-        <dt>Max Rows:</dt>
-        <dd>{{ rowsN }}</dd>
+        <dt>Sequence length:</dt>
+        <dd>{{ this.curSequence.length }}</dd>
+        <dt>Rows number:</dt>
+        <dd>{{ matrix.length }}</dd>
+        <dt>Max Size:</dt>
+        <dd>{{ colsN }}×{{ rowsN }}</dd>
       </dl>
     </header>
     <article class="matrix">
@@ -85,6 +88,12 @@ export default {
     onNext() {
       this.activeCoords = []
       this.reproduce()
+    },
+
+    onRestart() {
+      // just reset whole data
+      // thx to https://github.com/vuejs/vue/issues/702#issuecomment-308991548
+      Object.assign(this.$data, this.$options.data.apply(this))
     },
 
     onGameOver(msg) {
