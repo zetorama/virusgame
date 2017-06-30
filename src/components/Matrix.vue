@@ -162,9 +162,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-@import "../utils/vars.css";
 @import "../utils/keyframes.css";
-
 
 .matrix-cmp {
   --border-width: 1px;
