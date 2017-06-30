@@ -67,7 +67,14 @@ export default {
         (all, row) => all.concat(row.filter(col => this.isCell(col))),
         [],
       )
-    }
+    },
+  },
+  watch: {
+    curSequence(curSequence) {
+      if (curSequence.length < 1) {
+        this.onGameWon()
+      }
+    },
   },
   methods: {
     onChoose(row, col) {
@@ -96,8 +103,12 @@ export default {
       Object.assign(this.$data, this.$options.data.apply(this))
     },
 
-    onGameOver(msg) {
-      alert(msg)
+    onGameWon() {
+      alert('WIN!')
+    },
+
+    onGameOver() {
+      alert('FINITA!')
     },
 
     clsCell(row, col) {
@@ -137,7 +148,7 @@ export default {
     reproduce() {
       this.matrix = this.fill(this.clone())
       if (!this.hasSpace()) {
-        this.onGameOver('FINITA!')
+        this.onGameOver()
       }
       return this
     },
@@ -177,6 +188,9 @@ export default {
     },
 
     hasSpace() {
+      if (!this.rowsN) {
+        return true
+      }
       const rowsN = this.matrix.length
       return rowsN < this.rowsN || (rowsN === this.rowsN && this.matrix[rowsN - 1].length < this.colsN)
     },
