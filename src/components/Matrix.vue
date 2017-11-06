@@ -12,6 +12,16 @@
           <input type="checkbox" id="shouldStartWithRandoms" v-model="shouldStartWithRandoms">
           <label for="shouldStartWithRandoms">Start with Random Sequence</label>
         </span>
+        <br>
+        <span class="option">
+          Max Rows:
+          <input type="radio" id="rowsN-16" value="16" v-model.number="rowsN">
+          <label for="rowsN-16">16</label>
+          <input type="radio" id="rowsN-32" value="32" v-model.number="rowsN">
+          <label for="rowsN-32">32</label>
+          <input type="radio" id="rowsN-0" value="0" v-model.number="rowsN">
+          <label for="rowsN-0">∞</label>
+        </span>
       </form>
 
       <div class="actions">
@@ -402,6 +412,9 @@ export default {
   }
   .options {
     line-height: 2.2rem;
+  }
+  .option input + label + input {
+    margin-left: 1rem;
   }
   .info dt, .info dd {
     display: inline;
