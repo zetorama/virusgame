@@ -17,6 +17,10 @@ export default {
 html {
   font-size: 10px;
 }
+ol, ul, dl, p, form {
+  font-size: 1.3rem;
+}
+
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

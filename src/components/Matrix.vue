@@ -367,7 +367,6 @@ export default {
     display: inline;
     margin: 0;
     list-style: none;
-    font-size: 1.3rem;
   }
   .info dd + dt::before {
     content: "| ";
