@@ -1,6 +1,8 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
+    <!-- <img src="./assets/logo.png"> -->
+    <span id="logo">√1Ⓡи$</span>
+    <h1>Virus: The Game</h1>
     <router-view id="content"></router-view>
   </div>
 </template>
@@ -23,8 +25,19 @@ html {
   color: #2c3e50;
   margin-top: 5rem;
 }
+#logo {
+  font-size: 4.5rem;
+  font-weight: bold;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Verdana, sans-serif;
+  color: darkgreen;
+}
+#logo + h1 {
+  margin-top: -1rem;
+  font-weight: normal;
+}
 #content {
   min-height: 600px;
+  margin-bottom: 50px;
 }
 
 button {
