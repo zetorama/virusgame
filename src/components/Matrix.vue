@@ -1,23 +1,25 @@
 <template>
   <section class="matrix-cmp">
     <header class="header">
-      <div class="actions">
-        <button @click.prevent="onRestart">Restart</button>
-        <button @click.prevent="onNext">Next round</button>
-      </div>
-      <form class="options">
+      <form class="options muted">
         <strong>Options:</strong>
-        <span class="option">
-          <input type="checkbox" id="checkbox" v-model="shouldStartWithRandoms">
-          <label for="checkbox">Start with Random Sequence</label>
-        </span>
-        <br>
         <span class="option">
           <input type="checkbox" id="checkbox" v-model="shouldRemoveEmptyRow">
           <label for="checkbox">Remove Empty Row(s)</label>
         </span>
+        <br>
+        <span class="option">
+          <input type="checkbox" id="checkbox" v-model="shouldStartWithRandoms">
+          <label for="checkbox">Start with Random Sequence</label>
+        </span>
       </form>
-      <dl class="info">
+
+      <div class="actions">
+        <button @click.prevent="onRestart">Restart</button>
+        <button @click.prevent="onNext">Next round</button>
+      </div>
+
+      <dl class="info muted">
         <dt>Sequence length:</dt>
         <dd>{{ this.curSequence.length }}</dd>
         <dt>Rows number:</dt>
@@ -389,8 +391,17 @@ export default {
     --blink-speed: 1s;
   }
 
-  .actions {
-    padding: 20px;
+  .muted {
+    opacity: .5;
+  }
+  .muted:hover {
+    opacity: 1;
+  }
+  .actions, .options {
+    margin: 20px;
+  }
+  .options {
+    line-height: 2.2rem;
   }
   .info dt, .info dd {
     display: inline;
