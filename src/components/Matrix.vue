@@ -8,6 +8,11 @@
       <form class="options">
         <strong>Options:</strong>
         <span class="option">
+          <input type="checkbox" id="checkbox" v-model="shouldStartWithRandoms">
+          <label for="checkbox">Start with Random Sequence</label>
+        </span>
+        <br>
+        <span class="option">
           <input type="checkbox" id="checkbox" v-model="shouldRemoveEmptyRow">
           <label for="checkbox">Remove Empty Row(s)</label>
         </span>
@@ -51,6 +56,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    shouldStartWithRandoms: {
+      type: Boolean,
+      default: false,
+    },
     colsN: {
       type: Number,
       default: 10,
@@ -74,7 +83,7 @@ export default {
   data () {
     return {
       chained: [],
-      matrix: this.fill([], this.sequence)
+      matrix: this.fill([], this.shouldStartWithRandoms ? this.generate(this.sequence.length) : this.sequence)
     }
   },
   computed: {
@@ -166,6 +175,10 @@ export default {
         'is-empty': isEmpty,
         'is-active': isActive,
       }
+    },
+
+    generate(n) {
+      return [...Array(n)].map(x => Math.min(9, Math.floor(Math.random() * 10)))
     },
 
     toggle(onOff, ...coords) {
