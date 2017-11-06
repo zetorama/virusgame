@@ -5,6 +5,13 @@
         <button @click.prevent="onRestart">Restart</button>
         <button @click.prevent="onNext">Next round</button>
       </div>
+      <form class="options">
+        <strong>Options:</strong>
+        <span class="option">
+          <input type="checkbox" id="checkbox" v-model="shouldRemoveEmptyRow">
+          <label for="checkbox">Remove Empty Row(s)</label>
+        </span>
+      </form>
       <dl class="info">
         <dt>Sequence length:</dt>
         <dd>{{ this.curSequence.length }}</dd>
@@ -40,6 +47,10 @@ export default {
   components: {
   },
   props: {
+    shouldRemoveEmptyRow: {
+      type: Boolean,
+      default: true,
+    },
     colsN: {
       type: Number,
       default: 10,
@@ -196,8 +207,13 @@ export default {
           }
         }
 
+        if (this.shouldRemoveEmptyRow && seq.every(cell => cell === null)) {
+          // remove this row
+          return undefined
+        }
+
         return seq
-      })
+      }).filter(Boolean)
 
       return this
     },
