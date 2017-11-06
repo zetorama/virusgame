@@ -4,13 +4,13 @@
       <form class="options muted">
         <strong>Options:</strong>
         <span class="option">
-          <input type="checkbox" id="checkbox" v-model="shouldRemoveEmptyRow">
-          <label for="checkbox">Remove Empty Row(s)</label>
+          <input type="checkbox" id="shouldRemoveEmptyRow" v-model="shouldRemoveEmptyRow">
+          <label for="shouldRemoveEmptyRow">Remove Empty Row(s)</label>
         </span>
         <br>
         <span class="option">
-          <input type="checkbox" id="checkbox" v-model="shouldStartWithRandoms">
-          <label for="checkbox">Start with Random Sequence</label>
+          <input type="checkbox" id="shouldStartWithRandoms" v-model="shouldStartWithRandoms">
+          <label for="shouldStartWithRandoms">Start with Random Sequence</label>
         </span>
       </form>
 
