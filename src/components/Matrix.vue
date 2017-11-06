@@ -95,7 +95,7 @@ export default {
   data () {
     return {
       chained: [],
-      matrix: this.fill([], this.shouldStartWithRandoms ? this.generate(this.sequence.length) : this.sequence)
+      matrix: this.fill([], this.shouldStartWithRandoms ? this.generate(this.sequence.length * 2) : this.sequence)
     }
   },
   computed: {
