@@ -55,6 +55,20 @@
         </div>
       </div>
     </article>
+    <aside class="guidelines muted">
+      <dl>
+        <dt>Goal:</dt>
+        <dd>You need to clear up all INFECTED cells</dd>
+        <dt>Next Round:</dt>
+        <dd>It just DUPLICATES current strain</dd>
+      </dl>
+      <h3>You can neutralize TWO infected cells by these RULES:</h3>
+      <ul>
+        <li>They both should be on the same VERTICAL, HORIZONTAL or DIAGONAL,</li>
+        <li>They both should be VISIBLE to each other,</li>
+        <li>They both should have the SAME VALUE or make a SUM OF 10.</li>
+      </ul>
+    </aside>
   </section>
 </template>
 
@@ -424,6 +438,25 @@ export default {
   .info dd + dt::before {
     content: "| ";
     padding: 0 5px;
+  }
+
+  .guidelines dt, .guidelines dd {
+    display: inline;
+    margin: 0;
+  }
+  .guidelines dt {
+    font-weight: bolder;
+  }
+  .guidelines dt::before {
+    content: "\A";
+    white-space: pre;
+  }
+  .guidelines dt + dd {
+    margin-left: 5px;
+  }
+
+  .guidelines ul > li {
+    list-style: inside;
   }
 
   .matrix {
